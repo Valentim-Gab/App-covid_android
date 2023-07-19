@@ -1,18 +1,26 @@
 import 'package:app_covid/database/patient_dao.dart';
 import 'package:app_covid/models/Patient.dart';
+import 'package:app_covid/screens/android/patients/patients_add.dart';
 import 'package:app_covid/screens/android/patients/patients_item.dart';
+import 'package:app_covid/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class PatientsList extends StatelessWidget {
+class PatientsList extends StatefulWidget {
   const PatientsList({super.key});
 
   @override
+  State<PatientsList> createState() => _PatientsListState();
+}
+
+class _PatientsListState extends State<PatientsList> {
+  @override
   Widget build(BuildContext context) {
-    List<Patient> _patients = PatientDao.listPatients;
+    List<Patient> patients = PatientDao.listPatients;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('PACIENTES'),
+        backgroundColor: AppColors.primaryColor,
       ),
       body: Column(
         children: [
@@ -25,29 +33,30 @@ class PatientsList extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: _patients.length,
+                itemCount: patients.length,
                 itemBuilder: (context, index) {
-                  final patient = _patients[index];
+                  final patient = patients[index];
 
                   return PatientsItem(
                     patient: patient,
                   );
-                }
-
-                // children: const [
-                //   PatientsItem(),
-                //   PatientsItem(),
-                //   PatientsItem(),
-                // ],
-                ),
+                }),
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        backgroundColor: AppColors.primaryColor,
         onPressed: () {
-          debugPrint('Adicionando paciente');
+          Navigator.of(context)
+              .push(
+                  MaterialPageRoute(builder: (context) => const PatientsAdd()))
+              .then(
+            (value) {
+              setState(() {});
+            },
+          );
         },
+        child: const Icon(Icons.add),
       ),
     );
   }

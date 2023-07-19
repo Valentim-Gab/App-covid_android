@@ -14,12 +14,12 @@ class LoginScreen extends StatelessWidget {
           title: const Text('Tela de Login'),
         ),
         body: Container(
-          padding: const EdgeInsets.symmetric(vertical: 25.0),
+          padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 16),
           width: double.infinity,
           child: ElevatedButton.icon(
             onPressed: () {
-              Navigator.of(context)
-                  .pushReplacement(MaterialPageRoute(builder: (context) => const DashboardScreen()));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => const DashboardScreen()));
             },
             icon: const Icon(Icons.login),
             label: const Text(

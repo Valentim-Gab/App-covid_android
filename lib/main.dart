@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 
 void main() {
   generatePatients() {
-    PatientDao.add(Patient(1, 'Alencar Machado', 'alencar_machado@ufsm.br',
-        'tx232', 33, 'asenhanaoe123'));
-    PatientDao.add(Patient(2, 'Gabriel Valentim', 'valentim@email.vale',
-        'xx444', 20, '123eosguri'));
+    PatientDao.add(Patient(0, 'Alencar Machado', 'alencar_machado@ufsm.br',
+        'tx232', 33, 'asenhanaoe123', ''));
+    PatientDao.add(Patient(1, 'Gabriel Valentim', 'valentim@email.vale',
+        'xx444', 20, '123eosguri', ''));
     PatientDao.add(Patient(
-        3, 'Eduardo Londero', 'daro@email.vale', 'we151', 22, 'bitwarden'));
+        2, 'Eduardo Londero', 'daro@email.vale', 'we151', 22, 'bitwarden', ''));
   }
 
   if (Platform.isAndroid) {

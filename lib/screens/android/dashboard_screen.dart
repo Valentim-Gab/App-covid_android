@@ -52,6 +52,13 @@ class DashboardScreen extends StatelessWidget {
                           debugPrint('Resultados');
                         },
                       ),
+                      _Element(
+                        'AGENTES DE SAÚDE',
+                        Icons.medical_services_sharp,
+                        onClick: () {
+                          debugPrint('Agentes');
+                        },
+                      ),
                     ],
                   ),
                 ),

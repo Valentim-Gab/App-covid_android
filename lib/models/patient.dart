@@ -1,20 +1,31 @@
 class Patient {
-  final int _id;
+  int? _id;
   String _nome;
   String _email;
-  String _cartao;
-  int _idade;
-  String _senha;
+  String _card;
+  int _years;
+  String _password;
+  String _photo;
 
-  Patient(this._id, this._nome, this._email, this._cartao, this._idade,
-      this._senha);
+  Patient(this._id, this._nome, this._email, this._card, this._years,
+      this._password, this._photo);
 
-  int get id => _id;
+  @override
+  String toString() {
+    return 'Patient(id: $_id, nome: $_nome, email: $_email, card: $_card, years: $_years, password: $_password, photo: $_photo)';
+  }
+
+  int? get id => _id;
   String get nome => _nome;
   String get email => _email;
-  String get cartao => _cartao;
-  int get idade => _idade;
-  String get senha => _senha;
+  String get card => _card;
+  int get years => _years;
+  String get password => _password;
+  String get photo => _photo;
+
+  set id(int? id) {
+    _id = id;
+  }
 
   set nome(String nome) {
     _nome = nome;
@@ -24,15 +35,19 @@ class Patient {
     _email = email;
   }
 
-  set cartao(String cartao) {
-    _cartao = cartao;
+  set card(String card) {
+    _card = card;
   }
 
-  set idade(int idade) {
-    _idade = idade;
+  set years(int years) {
+    _years = years;
   }
 
-  set senha(String senha) {
-    _senha = senha;
+  set password(String password) {
+    _password = password;
+  }
+
+  set photo(String photo) {
+    _photo = photo;
   }
 }

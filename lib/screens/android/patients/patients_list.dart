@@ -1,6 +1,6 @@
 import 'package:app_covid/database/patient_dao.dart';
 import 'package:app_covid/models/Patient.dart';
-import 'package:app_covid/screens/android/patients/patients_add.dart';
+import 'package:app_covid/screens/android/patients/patient_screen.dart';
 import 'package:app_covid/screens/android/patients/patients_item.dart';
 import 'package:app_covid/utils/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +39,18 @@ class _PatientsListState extends State<PatientsList> {
 
                   return PatientsItem(
                     patient: patient,
+                    onClick: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(
+                              builder: (context) => PatientScreen(
+                                    index: index,
+                                  )))
+                          .then(
+                        (value) {
+                          setState(() {});
+                        },
+                      );
+                    },
                   );
                 }),
           )
@@ -48,8 +60,8 @@ class _PatientsListState extends State<PatientsList> {
         backgroundColor: AppColors.primaryColor,
         onPressed: () {
           Navigator.of(context)
-              .push(
-                  MaterialPageRoute(builder: (context) => const PatientsAdd()))
+              .push(MaterialPageRoute(
+                  builder: (context) => const PatientScreen()))
               .then(
             (value) {
               setState(() {});

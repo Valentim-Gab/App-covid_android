@@ -1,22 +1,65 @@
+import 'dart:io';
+
 import 'package:app_covid/models/Patient.dart';
 import 'package:app_covid/utils/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_randomcolor/flutter_randomcolor.dart';
 
 class PatientsItem extends StatelessWidget {
   final Patient _patient;
+  final Function _onClick;
 
-  const PatientsItem({Key? key, required Patient patient})
+  const PatientsItem(
+      {Key? key, required Patient patient, required Function onClick})
       : _patient = patient,
+        _onClick = onClick,
         super(key: key);
+
+  Widget _oldAvatar() {
+    return const CircleAvatar(
+      backgroundImage: AssetImage('assets/images/avatar.jpg'),
+    );
+  }
+
+  Color getRandomColor() {
+    var color = RandomColor.getColor(Options(luminosity: Luminosity.dark));
+    var colorString = color.substring(4, color.length - 1);
+    var colorValues = colorString.split(',');
+
+    int red = int.parse(colorValues[0]);
+    int green = int.parse(colorValues[1]);
+    int blue = int.parse(colorValues[2]);
+
+    return Color.fromARGB(255, red, green, blue);
+  }
+
+  Widget _profilePicture() {
+    String notProfilePhoto =
+        _patient.photo != '' ? '' : _patient.nome.substring(0, 1).toUpperCase();
+
+    return CircleAvatar(
+      backgroundColor: getRandomColor(),
+      backgroundImage:
+          _patient.photo != '' ? FileImage(File(_patient.photo)) : null,
+      radius: 22,
+      child: Text(
+        notProfilePhoto,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ListTile(
-            leading: const CircleAvatar(
-              backgroundImage: AssetImage('assets/images/avatar.jpg'),
-            ),
+            onTap: () => _onClick(),
+            leading: _profilePicture(),
             title: Text(
               _patient.nome,
               style: const TextStyle(fontSize: 24),
@@ -41,10 +84,6 @@ class PatientsItem extends StatelessWidget {
     return PopupMenuButton(
       itemBuilder: (BuildContext context) =>
           <PopupMenuItem<MenuItemsPatientList>>[
-        const PopupMenuItem(
-          value: MenuItemsPatientList.edit,
-          child: Text('Editar'),
-        ),
         const PopupMenuItem(
           value: MenuItemsPatientList.results,
           child: Text('Resultados'),

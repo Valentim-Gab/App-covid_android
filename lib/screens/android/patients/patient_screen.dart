@@ -4,28 +4,50 @@ import 'package:app_covid/database/patient_dao.dart';
 import 'package:app_covid/models/Patient.dart';
 import 'package:app_covid/utils/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-class PatientsAdd extends StatefulWidget {
-  const PatientsAdd({super.key});
+class PatientScreen extends StatefulWidget {
+  final int? idPatient;
+
+  const PatientScreen({Key? key, int? index})
+      : idPatient = index,
+        super(key: key);
 
   @override
-  State<PatientsAdd> createState() => _PatientsAddState();
+  State<PatientScreen> createState() => _PatientScreenState();
 }
 
-class _PatientsAddState extends State<PatientsAdd> {
+class _PatientScreenState extends State<PatientScreen> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController cardController = TextEditingController();
+  final TextEditingController yearsController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  bool isUpdate = false;
+  Patient? _patient;
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController cardController = TextEditingController();
-    final TextEditingController yearsController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
+    if (widget.idPatient != null && !isUpdate) {
+      _patient = PatientDao.getPatient(widget.idPatient!);
+
+      if (_patient != null) {
+        _patient?.id = widget.idPatient!;
+        nameController.text = _patient!.nome;
+        emailController.text = _patient!.email;
+        cardController.text = _patient!.card;
+        yearsController.text = _patient!.years.toString();
+        passwordController.text = _patient!.password;
+        _profilePicture = _patient!.photo;
+        isUpdate = true;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Adicionar paciente'),
+        title: const Text('Paciente'),
         backgroundColor: AppColors.primaryColor,
       ),
       body: SingleChildScrollView(
@@ -122,15 +144,23 @@ class _PatientsAddState extends State<PatientsAdd> {
                     ),
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
-                        PatientDao.add(
-                          Patient(
-                              0,
-                              nameController.text,
-                              emailController.text,
-                              cardController.text,
-                              int.tryParse(yearsController.text)!,
-                              passwordController.text),
+                        bool isUpdate = widget.idPatient != null;
+
+                        Patient patient = Patient(
+                          isUpdate ? widget.idPatient : null,
+                          nameController.text,
+                          emailController.text,
+                          cardController.text,
+                          int.tryParse(yearsController.text)!,
+                          passwordController.text,
+                          _profilePicture,
                         );
+
+                        if (isUpdate) {
+                          PatientDao.update(patient);
+                        } else {
+                          PatientDao.add(patient);
+                        }
 
                         Navigator.of(context).pop();
                       }
@@ -185,13 +215,14 @@ class _PatientsAddState extends State<PatientsAdd> {
       actions: [
         TextButton(
           onPressed: () {
+            _getAvatarPicture(ImageSource.gallery);
             Navigator.of(context).pop();
           },
           child: const Text('GALERIA'),
         ),
         TextButton(
           onPressed: () {
-            _getAvatarPicture();
+            _getAvatarPicture(ImageSource.camera);
             Navigator.of(context).pop();
           },
           child: const Text('CÂMERA'),
@@ -209,14 +240,38 @@ class _PatientsAddState extends State<PatientsAdd> {
 
   String _profilePicture = '';
 
-  _getAvatarPicture() async {
+  _getAvatarPicture(ImageSource source) async {
     final imagePicker = ImagePicker();
-    final pickedImage = await imagePicker.pickImage(source: ImageSource.camera);
+    try {
+      final pickedImage = await imagePicker.pickImage(source: source);
 
-    if (pickedImage != null) {
-      setState(() {
-        _profilePicture = pickedImage.path;
-      });
+      if (pickedImage != null) {
+        CroppedFile? cropped = await ImageCropper().cropImage(
+            sourcePath: pickedImage.path,
+            aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+            compressQuality: 100,
+            maxWidth: 700,
+            maxHeight: 700,
+            compressFormat: ImageCompressFormat.jpg,
+            uiSettings: [
+              AndroidUiSettings(
+                activeControlsWidgetColor: AppColors.primaryColor,
+                toolbarWidgetColor: Colors.white,
+                toolbarColor: AppColors.primaryColor,
+                toolbarTitle: 'Ajustar imagem',
+                statusBarColor: AppColors.primaryColor,
+                backgroundColor: Colors.black,
+              )
+            ]);
+
+        if (cropped != null) {
+          setState(() {
+            _profilePicture = cropped.path;
+          });
+        }
+      }
+    } catch (e) {
+      return null;
     }
   }
 }

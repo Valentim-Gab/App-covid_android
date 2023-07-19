@@ -1,11 +1,19 @@
+import 'dart:io';
+
 import 'package:app_covid/database/patient_dao.dart';
 import 'package:app_covid/models/Patient.dart';
 import 'package:app_covid/utils/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-class PatientsAdd extends StatelessWidget {
+class PatientsAdd extends StatefulWidget {
   const PatientsAdd({super.key});
 
+  @override
+  State<PatientsAdd> createState() => _PatientsAddState();
+}
+
+class _PatientsAddState extends State<PatientsAdd> {
   @override
   Widget build(BuildContext context) {
     final TextEditingController nameController = TextEditingController();
@@ -27,6 +35,7 @@ class PatientsAdd extends StatelessWidget {
             key: formKey,
             child: Column(
               children: [
+                _avatarPhoto(context),
                 TextFormField(
                   controller: nameController,
                   decoration: const InputDecoration(
@@ -138,5 +147,76 @@ class PatientsAdd extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _avatarPhoto(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(150),
+      child: InkWell(
+        focusColor: Colors.red,
+        onTap: () {
+          alertTakePicture(context);
+        },
+        borderRadius: BorderRadius.circular(150),
+        child: CircleAvatar(
+          backgroundImage: const AssetImage('assets/images/camera.png'),
+          radius: 70,
+          child: _profilePicture != ''
+              ? Image.file(
+                  File(_profilePicture),
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                )
+              : null,
+        ),
+      ),
+    );
+  }
+
+  alertTakePicture(BuildContext context) {
+    AlertDialog alertDialog = AlertDialog(
+      title: const Text(
+        'Escolher foto?',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      content:
+          const Text('Escolha entre câmera ou galeria para uma foto de perfil'),
+      elevation: 5,
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('GALERIA'),
+        ),
+        TextButton(
+          onPressed: () {
+            _getAvatarPicture();
+            Navigator.of(context).pop();
+          },
+          child: const Text('CÂMERA'),
+        )
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
+  }
+
+  String _profilePicture = '';
+
+  _getAvatarPicture() async {
+    final imagePicker = ImagePicker();
+    final pickedImage = await imagePicker.pickImage(source: ImageSource.camera);
+
+    if (pickedImage != null) {
+      setState(() {
+        _profilePicture = pickedImage.path;
+      });
+    }
   }
 }

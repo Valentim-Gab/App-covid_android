@@ -1,5 +1,5 @@
 import 'package:app_covid/database/patient_dao.dart';
-import 'package:app_covid/models/Patient.dart';
+import 'package:app_covid/models/patient.dart';
 import 'package:app_covid/screens/android/patients/patient_screen.dart';
 import 'package:app_covid/screens/android/patients/patients_item.dart';
 import 'package:app_covid/utils/app_colors.dart';

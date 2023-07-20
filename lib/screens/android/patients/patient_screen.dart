@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:app_covid/database/patient_dao.dart';
-import 'package:app_covid/models/Patient.dart';
+import 'package:app_covid/models/patient.dart';
 import 'package:app_covid/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';

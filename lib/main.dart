@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:app_covid/database/patient_dao.dart';
-import 'package:app_covid/models/Patient.dart';
+import 'package:app_covid/models/patient.dart';
 import 'package:app_covid/screens/android/app_covid.dart';
 import 'package:flutter/material.dart';
 

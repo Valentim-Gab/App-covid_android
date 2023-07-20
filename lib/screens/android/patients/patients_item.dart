@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:app_covid/models/Patient.dart';
+import 'package:app_covid/models/patient.dart';
+import 'package:app_covid/screens/android/checklist/symptom_checklist.dart';
 import 'package:app_covid/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_randomcolor/flutter_randomcolor.dart';
@@ -68,7 +69,7 @@ class PatientsItem extends StatelessWidget {
               _patient.email,
               style: const TextStyle(fontSize: 12),
             ),
-            trailing: _menu()),
+            trailing: _menu(context)),
         const Divider(
           color: AppColors.primaryColor,
           indent: 70,
@@ -80,7 +81,7 @@ class PatientsItem extends StatelessWidget {
     );
   }
 
-  Widget _menu() {
+  Widget _menu(BuildContext context) {
     return PopupMenuButton(
       itemBuilder: (BuildContext context) =>
           <PopupMenuItem<MenuItemsPatientList>>[
@@ -94,7 +95,12 @@ class PatientsItem extends StatelessWidget {
         )
       ],
       onSelected: (MenuItemsPatientList selected) {
-        debugPrint(selected.toString());
+        if (selected == MenuItemsPatientList.newChecklist) {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => SymptomChecklist(
+                    idPatient: _patient.id,
+                  )));
+        }
       },
     );
   }

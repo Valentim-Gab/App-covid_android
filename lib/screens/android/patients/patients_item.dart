@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:app_covid/database/check_symptom_dao.dart';
+import 'package:app_covid/models/check_symptom.dart';
 import 'package:app_covid/models/patient.dart';
 import 'package:app_covid/screens/android/checklist/symptom_checklist.dart';
 import 'package:app_covid/utils/app_colors.dart';
@@ -100,6 +102,17 @@ class PatientsItem extends StatelessWidget {
               builder: (context) => SymptomChecklist(
                     idPatient: _patient.id,
                   )));
+        } else if (selected == MenuItemsPatientList.results) {
+          List<CheckSymptom> checkSymptomList =
+              CheckSymptomDao.getPatientCheckSymptom(_patient);
+
+          if (checkSymptomList.isNotEmpty) {
+            for (CheckSymptom checkSymptom in checkSymptomList) {
+              debugPrint(checkSymptom.toString());
+            }
+          } else {
+            debugPrint('Nenhum registro encontrado');
+          }
         }
       },
     );

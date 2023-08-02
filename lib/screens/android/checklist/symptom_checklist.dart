@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:app_covid/database/check_symptom_dao.dart';
 import 'package:app_covid/database/patient_dao.dart';
+import 'package:app_covid/models/check_symptom.dart';
 import 'package:app_covid/models/patient.dart';
+import 'package:app_covid/screens/android/checklist/sc_results.dart';
 import 'package:app_covid/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +25,12 @@ class _SymptomChecklistState extends State<SymptomChecklist> {
 
   @override
   Widget build(BuildContext context) {
+    _isCough = false;
+    _isPhlegm = false;
+    _isHoarseness = false;
+    _isSoreThroat = false;
+    _isStuffyNose = false;
+
     if (widget.idPatient != null) {
       _patient = PatientDao.getPatient(widget.idPatient!);
     }
@@ -31,32 +40,56 @@ class _SymptomChecklistState extends State<SymptomChecklist> {
         title: Text('Sintomas ${_patient?.nome ?? ''}'),
         backgroundColor: AppColors.primaryColor,
       ),
-      body: Form(
-        key: _formKeys,
-        child: Column(
-          children: [
-            _patientAvatar(),
-            _tempDaysSymptoms(),
-            _registerBtn(),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKeys,
+            child: Column(
+              children: [
+                _patientAvatar(),
+                const CheckBoxSymptom(),
+                _tempDaysSymptoms(),
+                _registerBtn(context),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _registerBtn() {
+  Widget _registerBtn(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: ElevatedButton(
         onPressed: () {
           if (_formKeys.currentState!.validate()) {
-            debugPrint('sasdf');
+            if (_patient != null) {
+              CheckSymptom checkSymptom = CheckSymptom(
+                0,
+                _patient!,
+                int.tryParse(tempController.text) ?? -1,
+                int.tryParse(daysController.text) ?? -1,
+                _isStuffyNose,
+                _isSoreThroat,
+                _isHoarseness,
+                _isPhlegm,
+                _isCough,
+                DateTime.now(),
+              );
+
+              // CheckSymptomDao.add(checkSymptom);
+
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => SCResults(checkSymptom)));
+            }
           }
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primaryColor,
-            padding: const EdgeInsets.symmetric(vertical: 10)),
+            padding: const EdgeInsets.symmetric(vertical: 16)),
         child: const Text(
           'REGISTRAR',
           style: TextStyle(
@@ -151,6 +184,104 @@ class _SymptomChecklistState extends State<SymptomChecklist> {
           fontSize: 24,
           color: Colors.white,
         ),
+      ),
+    );
+  }
+}
+
+class CheckBoxSymptom extends StatefulWidget {
+  const CheckBoxSymptom({super.key});
+
+  @override
+  State<CheckBoxSymptom> createState() => _CheckBoxSymptomState();
+}
+
+bool _isCough = false;
+bool _isPhlegm = false;
+bool _isHoarseness = false;
+bool _isSoreThroat = false;
+bool _isStuffyNose = false;
+
+class _CheckBoxSymptomState extends State<CheckBoxSymptom> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          _itemCheck(
+            label: 'TOSSE',
+            value: _isCough,
+            onChanged: () {
+              setState(() {
+                _isCough = !_isCough;
+              });
+            },
+          ),
+          _itemCheck(
+            label: 'CATARRO',
+            value: _isPhlegm,
+            onChanged: () {
+              setState(() {
+                _isPhlegm = !_isPhlegm;
+              });
+            },
+          ),
+          _itemCheck(
+            label: 'ROUQUIDÃO',
+            value: _isHoarseness,
+            onChanged: () {
+              setState(() {
+                _isHoarseness = !_isHoarseness;
+              });
+            },
+          ),
+          _itemCheck(
+            label: 'DOR DE GARGANTA',
+            value: _isSoreThroat,
+            onChanged: () {
+              setState(() {
+                _isSoreThroat = !_isSoreThroat;
+              });
+            },
+          ),
+          _itemCheck(
+            label: 'NARIZ ENTUPIDO',
+            value: _isStuffyNose,
+            onChanged: () {
+              setState(() {
+                _isStuffyNose = !_isStuffyNose;
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _itemCheck(
+      {required String label,
+      required bool value,
+      required Function onChanged}) {
+    return InkWell(
+      onTap: () {
+        onChanged();
+      },
+      child: Row(
+        children: [
+          Checkbox(
+            onChanged: (bool? newValue) {
+              onChanged();
+            },
+            checkColor: Colors.green,
+            activeColor: Colors.white,
+            value: value,
+          ),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 26.0),
+          )
+        ],
       ),
     );
   }

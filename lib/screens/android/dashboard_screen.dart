@@ -1,4 +1,5 @@
 import 'package:app_covid/screens/android/login_screen.dart';
+import 'package:app_covid/screens/android/patients/patients_list.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/app_colors.dart';
@@ -32,24 +33,34 @@ class DashboardScreen extends StatelessWidget {
               _centerImg(),
               SizedBox(
                 height: 120,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    _Element(
-                      'PACIENTES',
-                      Icons.accessibility_new,
-                      onClick: () {
-                        debugPrint('Pacientes');
-                      },
-                    ),
-                    _Element(
-                      'RESULTADOS',
-                      Icons.check_circle_outline,
-                      onClick: () {
-                        debugPrint('Resultados');
-                      },
-                    ),
-                  ],
+                child: Center(
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: <Widget>[
+                      _Element(
+                        'PACIENTES',
+                        Icons.accessibility_new,
+                        onClick: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const PatientsList()));
+                        },
+                      ),
+                      _Element(
+                        'RESULTADOS',
+                        Icons.check_circle_outline,
+                        onClick: () {
+                          debugPrint('Resultados');
+                        },
+                      ),
+                      _Element(
+                        'AGENTES DE SAÚDE',
+                        Icons.medical_services_sharp,
+                        onClick: () {
+                          debugPrint('Agentes');
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               )
             ],
@@ -86,7 +97,7 @@ class DashboardScreen extends StatelessWidget {
               ]),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
-            child: Image.asset('images/check_image.jpg'),
+            child: Image.asset('assets/images/check_image.jpg'),
           ),
         ));
   }

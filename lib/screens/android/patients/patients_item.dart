@@ -104,16 +104,15 @@ class PatientsItem extends StatelessWidget {
             ),
           );
         } else if (selected == MenuItemsPatientList.results) {
-          List<CheckSymptom> checkSymptomList =
-              CheckSymptomDao.getPatientCheckSymptom(_patient);
-
-          if (checkSymptomList.isNotEmpty) {
-            for (CheckSymptom checkSymptom in checkSymptomList) {
-              debugPrint(checkSymptom.toString());
+          CheckSymptomDao().getPatientCheckSymptom(_patient).then((value) {
+            if (value.isNotEmpty) {
+              for (CheckSymptom checkSymptom in value) {
+                debugPrint(checkSymptom.toString());
+              }
+            } else {
+              debugPrint('NENHUM REGISTRO ENCONTRADO');
             }
-          } else {
-            debugPrint('Nenhum registro encontrado');
-          }
+          });
         }
       },
     );

@@ -6,12 +6,11 @@ import 'package:app_covid/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SCResults extends StatelessWidget {
-  CheckSymptom checkSymptom;
-  late String _msg;
+  final CheckSymptom checkSymptom;
+  final String _msg;
 
-  SCResults(this.checkSymptom, {super.key}) {
-    _msg = SuspectedCaseService().suspectedCaseOrientation(checkSymptom);
-  }
+  SCResults(this.checkSymptom, {super.key})
+      : _msg = SuspectedCaseService().suspectedCaseOrientation(checkSymptom);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +43,7 @@ class SCResults extends StatelessWidget {
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             onPressed: () {
-              CheckSymptomDao.add(checkSymptom);
+              CheckSymptomDao().add(checkSymptom);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => const PatientsList()));
             },

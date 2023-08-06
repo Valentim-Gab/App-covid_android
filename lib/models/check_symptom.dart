@@ -1,7 +1,7 @@
 import 'package:app_covid/models/patient.dart';
 
 class CheckSymptom {
-  int _id;
+  int? _id;
   Patient _patient;
   int _temp;
   int _qtdDaysSymptoms;
@@ -14,17 +14,33 @@ class CheckSymptom {
   bool? _isSuspiciousCase;
 
   CheckSymptom(
-    this._id,
-    this._patient,
-    this._temp,
-    this._qtdDaysSymptoms,
-    this._isStuffyNose,
-    this._isSoreThroat,
-    this._isHoarseness,
-    this._isPhlegm,
-    this._isCough,
-    this._evaluationDate,
-  ) {}
+      this._patient,
+      this._temp,
+      this._qtdDaysSymptoms,
+      this._isStuffyNose,
+      this._isSoreThroat,
+      this._isHoarseness,
+      this._isPhlegm,
+      this._isCough,
+      this._evaluationDate,
+      {int? id})
+      : _id = id;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id_patient': _patient.id,
+      'temp': _temp,
+      'qtd_days_symptoms': _qtdDaysSymptoms,
+      'is_cough': _isCough ? 1 : 0,
+      'is_phlegm': _isPhlegm ? 1 : 0,
+      'is_hoarseness': _isHoarseness ? 1 : 0,
+      'is_sore_throat': _isSoreThroat ? 1 : 0,
+      'is_stuffy_nose': _isStuffyNose ? 1 : 0,
+      'evaluation_date': _evaluationDate.toIso8601String(),
+      'is_suspicious_case':
+          _isSuspiciousCase == null ? 0 : (_isSuspiciousCase! ? 1 : 0),
+    };
+  }
 
   @override
   String toString() {
@@ -43,7 +59,7 @@ class CheckSymptom {
         ' }';
   }
 
-  int get id => _id;
+  int? get id => _id;
   Patient get patient => _patient;
   int get temp => _temp;
   int get qtdDaysSymptoms => _qtdDaysSymptoms;
@@ -55,7 +71,7 @@ class CheckSymptom {
   DateTime get evaluationDate => _evaluationDate;
   bool? get isSuspiciousCase => _isSuspiciousCase;
 
-  set id(int value) {
+  set id(int? value) {
     _id = value;
   }
 

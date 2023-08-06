@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:app_covid/database/check_symptom_dao.dart';
-import 'package:app_covid/database/patient_dao.dart';
 import 'package:app_covid/models/check_symptom.dart';
 import 'package:app_covid/models/patient.dart';
 import 'package:app_covid/screens/android/checklist/sc_results.dart';
@@ -65,7 +63,6 @@ class _SymptomChecklistState extends State<SymptomChecklist> {
           if (_formKeys.currentState!.validate()) {
             if (_patient != null) {
               CheckSymptom checkSymptom = CheckSymptom(
-                0,
                 _patient!,
                 int.tryParse(tempController.text) ?? -1,
                 int.tryParse(daysController.text) ?? -1,

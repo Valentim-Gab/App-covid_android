@@ -37,6 +37,7 @@ dependencies:
   image_cropper: ^5.0.0
   http: ^1.1.0
   flutter_randomcolor: ^1.0.14
+  sqflite:
 
 
   # The following adds the Cupertino Icons font to your application.

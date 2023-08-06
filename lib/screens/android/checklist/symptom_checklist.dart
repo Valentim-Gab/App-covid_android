@@ -9,9 +9,9 @@ import 'package:app_covid/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SymptomChecklist extends StatefulWidget {
-  final int? idPatient;
+  final Patient patient;
 
-  const SymptomChecklist({Key? key, this.idPatient}) : super(key: key);
+  const SymptomChecklist({Key? key, required this.patient}) : super(key: key);
 
   @override
   State<SymptomChecklist> createState() => _SymptomChecklistState();
@@ -25,15 +25,12 @@ class _SymptomChecklistState extends State<SymptomChecklist> {
 
   @override
   Widget build(BuildContext context) {
+    _patient = widget.patient;
     _isCough = false;
     _isPhlegm = false;
     _isHoarseness = false;
     _isSoreThroat = false;
     _isStuffyNose = false;
-
-    if (widget.idPatient != null) {
-      _patient = PatientDao.getPatient(widget.idPatient!);
-    }
 
     return Scaffold(
       appBar: AppBar(

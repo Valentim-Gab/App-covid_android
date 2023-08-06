@@ -1,5 +1,6 @@
 import 'package:app_covid/database/patient_dao.dart';
 import 'package:app_covid/models/patient.dart';
+import 'package:app_covid/screens/android/loader.dart';
 import 'package:app_covid/screens/android/patients/patient_screen.dart';
 import 'package:app_covid/screens/android/patients/patients_item.dart';
 import 'package:app_covid/utils/app_colors.dart';
@@ -15,8 +16,6 @@ class PatientsList extends StatefulWidget {
 class _PatientsListState extends State<PatientsList> {
   @override
   Widget build(BuildContext context) {
-    List<Patient> patients = PatientDao.listPatients;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('PACIENTES'),
@@ -31,37 +30,14 @@ class _PatientsListState extends State<PatientsList> {
                 hintText: 'Pesquisar',
                 prefixIcon: Icon(Icons.search)),
           ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: patients.length,
-                itemBuilder: (context, index) {
-                  final patient = patients[index];
-
-                  return PatientsItem(
-                    patient: patient,
-                    onClick: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(
-                              builder: (context) => PatientScreen(
-                                    index: index,
-                                  )))
-                          .then(
-                        (value) {
-                          setState(() {});
-                        },
-                      );
-                    },
-                  );
-                }),
-          )
+          Expanded(child: _futureBuilderPatient())
         ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primaryColor,
         onPressed: () {
           Navigator.of(context)
-              .push(MaterialPageRoute(
-                  builder: (context) => const PatientScreen()))
+              .push(MaterialPageRoute(builder: (context) => PatientScreen()))
               .then(
             (value) {
               setState(() {});
@@ -70,6 +46,83 @@ class _PatientsListState extends State<PatientsList> {
         },
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  Widget _futureBuilderPatient() {
+    return FutureBuilder<List<Patient>>(
+      initialData: const [],
+      future: PatientDao().getPatients(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            break;
+
+          case ConnectionState.waiting:
+            return const Loader();
+
+          case ConnectionState.active:
+            break;
+
+          case ConnectionState.done:
+            final List<Patient>? patientList = snapshot.data;
+
+            if (patientList != null && snapshot.hasData) {
+              return ListView.builder(
+                itemCount: patientList.length,
+                itemBuilder: (context, index) {
+                  final patient = patientList[index];
+
+                  return PatientsItem(
+                    patient: patient,
+                    onClick: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(
+                        builder: (context) => PatientScreen(
+                          patient: patient,
+                        ),
+                      ))
+                          .then((value) {
+                        setState(() {});
+                      });
+                    },
+                  );
+                },
+              );
+            }
+
+            return const Text('Não há pacientes cadastrados');
+        }
+
+        return const Text('Problemas em gerar a lista');
+      },
+    );
+  }
+
+  // ignore: unused_element
+  Widget _oldListPatient() {
+    List<Patient> patients = [];
+
+    return ListView.builder(
+      itemCount: patients.length,
+      itemBuilder: (context, index) {
+        final patient = patients[index];
+
+        return PatientsItem(
+          patient: patient,
+          onClick: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(
+              builder: (context) => PatientScreen(
+                patient: patient,
+              ),
+            ))
+                .then((value) {
+              setState(() {});
+            });
+          },
+        );
+      },
     );
   }
 }

@@ -7,8 +7,21 @@ class Patient {
   String _password;
   String _photo;
 
-  Patient(this._id, this._nome, this._email, this._card, this._years,
-      this._password, this._photo);
+  Patient(this._nome, this._email, this._card, this._years, this._password,
+      this._photo,
+      {int? id})
+      : _id = id;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'nome': _nome,
+      'email': _email,
+      'card': _card,
+      'years': _years,
+      'password': _password,
+      'photo': _photo
+    };
+  }
 
   @override
   String toString() {

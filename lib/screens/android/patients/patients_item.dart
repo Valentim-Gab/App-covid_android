@@ -98,10 +98,11 @@ class PatientsItem extends StatelessWidget {
       ],
       onSelected: (MenuItemsPatientList selected) {
         if (selected == MenuItemsPatientList.newChecklist) {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => SymptomChecklist(
-                    idPatient: _patient.id,
-                  )));
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SymptomChecklist(patient: _patient),
+            ),
+          );
         } else if (selected == MenuItemsPatientList.results) {
           List<CheckSymptom> checkSymptomList =
               CheckSymptomDao.getPatientCheckSymptom(_patient);

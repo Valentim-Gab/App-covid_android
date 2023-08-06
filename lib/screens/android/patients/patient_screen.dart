@@ -8,10 +8,11 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PatientScreen extends StatefulWidget {
+  final Patient? patient;
   final int? idPatient;
 
-  const PatientScreen({Key? key, int? index})
-      : idPatient = index,
+  PatientScreen({Key? key, this.patient})
+      : idPatient = (patient == null) ? -1 : patient.id,
         super(key: key);
 
   @override
@@ -30,11 +31,10 @@ class _PatientScreenState extends State<PatientScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.idPatient != null && !isUpdate) {
-      _patient = PatientDao.getPatient(widget.idPatient!);
+    if (widget.patient != null && widget.idPatient != null && !isUpdate) {
+      _patient = widget.patient;
 
       if (_patient != null) {
-        _patient?.id = widget.idPatient!;
         nameController.text = _patient!.nome;
         emailController.text = _patient!.email;
         cardController.text = _patient!.card;
@@ -144,10 +144,10 @@ class _PatientScreenState extends State<PatientScreen> {
                     ),
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
-                        bool isUpdate = widget.idPatient != null;
+                        bool isUpdate = (widget.patient != null &&
+                            widget.idPatient != null);
 
                         Patient patient = Patient(
-                          isUpdate ? widget.idPatient : null,
                           nameController.text,
                           emailController.text,
                           cardController.text,
@@ -157,9 +157,10 @@ class _PatientScreenState extends State<PatientScreen> {
                         );
 
                         if (isUpdate) {
-                          PatientDao.update(patient);
+                          patient.id = widget.idPatient;
+                          PatientDao().update(patient);
                         } else {
-                          PatientDao.add(patient);
+                          PatientDao().add(patient);
                         }
 
                         Navigator.of(context).pop();
